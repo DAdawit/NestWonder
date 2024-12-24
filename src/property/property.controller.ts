@@ -13,7 +13,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
-import { IdParamDto } from './dto/idParam.dto';
+// import { IdParamDto } from './dto/idParam.dto';
+import { ParseIdPipe } from './pipes/parseIdpipe';
 
 @Controller('property')
 export class PropertyController {
@@ -32,8 +33,8 @@ export class PropertyController {
   // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(
     @Body() // new ValidationPipe({
-    body //   whitelist: true,
     //   forbidNonWhitelisted: true,
+    body //   whitelist: true,
     //   groups: ['create'],
     //   always: true,
     // }),
@@ -43,7 +44,7 @@ export class PropertyController {
   }
 
   @Put(':id')
-  update(@Param() param: IdParamDto, @Body() body: CreatePropertyDto) {
+  update(@Param('id', ParseIdPipe) id, @Body() body: CreatePropertyDto) {
     return body;
   }
 }
