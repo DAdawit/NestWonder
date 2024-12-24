@@ -9,7 +9,7 @@ import {
   ParseBoolPipe,
   UsePipes,
   ValidationPipe,
-  // Patch,
+  Patch,
   Put,
   // Headers,
 } from '@nestjs/common';
@@ -24,18 +24,20 @@ import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { HeadersDto } from './dto/headers.dto';
 import { RequestHeader } from './pipes/request-header';
+import { PropertyService } from './property.service';
 
 @Controller('property')
 export class PropertyController {
+  constructor(private propertyService: PropertyService) {}
   @Get()
   findAll() {
-    return { name: 'property' };
+    return this.propertyService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id, @Query('sort', ParseBoolPipe) sort) {
     console.log(typeof id, typeof sort);
-    return { id, sort };
+    return this.propertyService.findOne(id);
   }
 
   @Post()
@@ -46,7 +48,7 @@ export class PropertyController {
     //   forbidNonWhitelisted: true,
     body: CreatePropertyZodDto,
   ) {
-    return body;
+    return this.propertyService.create(body);
   }
 
   // @Put(':id')
@@ -63,6 +65,6 @@ export class PropertyController {
     @RequestHeader(new ValidationPipe({ validateCustomDecorators: true }))
     headers: HeadersDto,
   ) {
-    return headers; // Now this will be validated against createPropertyZodSchema
+    return this.propertyService.update(id, body); // Now this will be validated against createPropertyZodSchema
   }
 }
