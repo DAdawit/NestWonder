@@ -7,14 +7,23 @@ import {
   ParseIntPipe,
   Query,
   ParseBoolPipe,
-  // UsePipes,
-  // ValidationPipe,
+  UsePipes,
+  ValidationPipe,
   // Patch,
   Put,
+  // Headers,
 } from '@nestjs/common';
-import { CreatePropertyDto } from './dto/createProperty.dto';
+// import { CreatePropertyDto } from './dto/createProperty.dto';
 // import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
+import {
+  CreatePropertyZodDto,
+  createPropertyZodSchema,
+} from './dto/createPropertyZod.dto';
+import { ZodValidationPipe } from './pipes/zodValidationPipe';
+import { CreatePropertyDto } from './dto/createProperty.dto';
+import { HeadersDto } from './dto/headers.dto';
+import { RequestHeader } from './pipes/request-header';
 
 @Controller('property')
 export class PropertyController {
@@ -30,21 +39,30 @@ export class PropertyController {
   }
 
   @Post()
+  @UsePipes(new ZodValidationPipe(createPropertyZodSchema))
   // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(
     @Body() // new ValidationPipe({
     //   forbidNonWhitelisted: true,
-    body //   whitelist: true,
-    //   groups: ['create'],
-    //   always: true,
-    // }),
-    : CreatePropertyDto,
+    body: CreatePropertyZodDto,
   ) {
     return body;
   }
 
+  // @Put(':id')
+  // @UsePipes(new ZodValidationPipe(createPropertyZodSchema))
+  // update(@Param('id', ParseIdPipe) id, @Body() body: CreatePropertyZodDto) {
+  //   return body;
+  // }
+
   @Put(':id')
-  update(@Param('id', ParseIdPipe) id, @Body() body: CreatePropertyDto) {
-    return body;
+  // @UsePipes(new ZodValidationPipe(createPropertyZodSchema))
+  update(
+    @Param('id', ParseIdPipe) id: number,
+    @Body() body: CreatePropertyDto,
+    @RequestHeader(new ValidationPipe({ validateCustomDecorators: true }))
+    headers: HeadersDto,
+  ) {
+    return headers; // Now this will be validated against createPropertyZodSchema
   }
 }
