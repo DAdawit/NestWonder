@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   Patch,
   Put,
+  Delete,
   // Headers,
 } from '@nestjs/common';
 // import { CreatePropertyDto } from './dto/createProperty.dto';
@@ -25,6 +26,7 @@ import { CreatePropertyDto } from './dto/createProperty.dto';
 import { HeadersDto } from './dto/headers.dto';
 import { RequestHeader } from './pipes/request-header';
 import { PropertyService } from './property.service';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -43,12 +45,11 @@ export class PropertyController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createPropertyZodSchema))
-  // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(
-    @Body() // new ValidationPipe({
-    dto //   forbidNonWhitelisted: true,
-    : CreatePropertyDto,
+    @Body()
+    dto: CreatePropertyZodDto,
   ) {
+    console.log('from controller', dto);
     return this.propertyService.create(dto);
   }
 
@@ -62,10 +63,15 @@ export class PropertyController {
   // @UsePipes(new ZodValidationPipe(createPropertyZodSchema))
   update(
     @Param('id', ParseIdPipe) id: number,
-    @Body() body: CreatePropertyDto,
+    @Body() body: UpdatePropertyDto,
     @RequestHeader(new ValidationPipe({ validateCustomDecorators: true }))
     headers: HeadersDto,
   ) {
     return this.propertyService.update(id, body); // Now this will be validated against createPropertyZodSchema
+  }
+
+  @Delete(':id')
+  delete(@Param('id', ParseIdPipe) id: number) {
+    return this.propertyService.delete(id);
   }
 }
