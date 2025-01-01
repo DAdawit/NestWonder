@@ -29,6 +29,7 @@ import { PropertyService } from './property.service';
 @Controller('property')
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}
+
   @Get()
   findAll() {
     return this.propertyService.findAll();
@@ -45,10 +46,10 @@ export class PropertyController {
   // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(
     @Body() // new ValidationPipe({
-    //   forbidNonWhitelisted: true,
-    body: CreatePropertyZodDto,
+    dto //   forbidNonWhitelisted: true,
+    : CreatePropertyDto,
   ) {
-    return this.propertyService.create(body);
+    return this.propertyService.create(dto);
   }
 
   // @Put(':id')
