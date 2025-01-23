@@ -1,4 +1,5 @@
 import { IsString, IsInt, Length } from 'class-validator';
+import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class CreatePropertyDto {
   @IsString()
